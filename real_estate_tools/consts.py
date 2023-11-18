@@ -1,4 +1,4 @@
-property_fields = keys = [
+property_fields = [
     "zpid",
     "city",
     "streetAddress",

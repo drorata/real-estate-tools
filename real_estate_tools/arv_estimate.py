@@ -41,8 +41,12 @@ if continue_condition:
 
     df = pd.DataFrame(results_summary)
 
-    filename = st.text_input("Choose filename to be used")
+    st.write("Following are the results:")
+    st.write(df)
 
     st.download_button(
-        label="Download as CSV", data=df.to_csv(), file_name=filename, mime="text/csv"
+        label="Download as result.csv",
+        data=df.to_csv(),
+        file_name="result.csv",
+        mime="text/csv",
     )
