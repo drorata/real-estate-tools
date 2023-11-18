@@ -6,3 +6,7 @@ tasks:
       - poetry run black --check --preview .
       - poetry run flake8 .
       - poetry run isort -c --df -v .
+
+  run_tests:
+    cmds:
+      - poetry run pytest ./tests/
