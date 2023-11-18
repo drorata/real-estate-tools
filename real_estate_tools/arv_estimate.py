@@ -8,11 +8,13 @@ from real_estate_tools import consts
 logger.info("ARV estimator started")
 
 
-def get_property_detail(api_key, zpid):
-    splitted = zpid.split('_')
-    finalZPID = splitted[0]
+def clean_zpid(zpid: str) -> str:
+    return zpid.split("_")[0]
+
+
+def get_property_detail(api_key: str, zpid: str) -> requests.Response:
     url = "https://app.scrapeak.com/v1/scrapers/zillow/property"
-    querystring = {"api_key": api_key, "zpid": finalZPID}
+    querystring = {"api_key": api_key, "zpid": zpid}
     return requests.request("GET", url, params=querystring)
 
 
@@ -20,6 +22,7 @@ api_key = st.text_input("Provide API key", type="password")
 
 zpids = st.text_input("Provide a ZPIDs (separated with commas)")
 zpids = zpids.split(",")
+zpids = [clean_zpid(zpid) for zpid in zpids]
 st.write(f"Following ZPIDs will be processed:\n{zpids}")
 
 
