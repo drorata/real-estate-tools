@@ -1,21 +1,11 @@
 import pandas as pd
-import requests
 import streamlit as st
 from loguru import logger
 
 from real_estate_tools import consts
+from real_estate_tools.utils import clean_zpid, get_property_detail
 
 logger.info("ARV estimator started")
-
-
-def clean_zpid(zpid: str) -> str:
-    return zpid.split("_")[0]
-
-
-def get_property_detail(api_key: str, zpid: str) -> requests.Response:
-    url = "https://app.scrapeak.com/v1/scrapers/zillow/property"
-    querystring = {"api_key": api_key, "zpid": zpid}
-    return requests.request("GET", url, params=querystring)
 
 
 api_key = st.text_input("Provide API key", type="password")
