@@ -9,8 +9,10 @@ logger.info("ARV estimator started")
 
 
 def get_property_detail(api_key, zpid):
+    splitted = zpid.split('_')
+    finalZPID = splitted[0]
     url = "https://app.scrapeak.com/v1/scrapers/zillow/property"
-    querystring = {"api_key": api_key, "zpid": zpid}
+    querystring = {"api_key": api_key, "zpid": finalZPID}
     return requests.request("GET", url, params=querystring)
 
 
