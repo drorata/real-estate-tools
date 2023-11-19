@@ -2,7 +2,7 @@ import pandas as pd
 import streamlit as st
 from loguru import logger
 
-from real_estate_tools import consts
+from real_estate_tools.consts import ZP_Data
 from real_estate_tools.utils import clean_zpid, get_property_detail
 
 logger.info("ARV estimator started")
@@ -26,15 +26,10 @@ if continue_condition:
                 logger.warning("Something went wrong")
                 logger.warning(f"Message is: {tmp_res['message']}")
             else:
-                results.append(tmp_res["data"])
+                results.append(ZP_Data(**tmp_res["data"]))
     st.success("Done!")
 
-    results_summary = []
-
-    for res in results:
-        results_summary.append({key: res[key] for key in consts.property_fields})
-
-    df = pd.DataFrame(results_summary)
+    df = pd.DataFrame([x.dict() for x in results])
 
     st.write("Following are the results:")
     st.write(df)
