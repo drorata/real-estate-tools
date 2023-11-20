@@ -5,8 +5,8 @@ tasks:
     cmds:
       - poetry run black --check --preview .
       - poetry run flake8 .
-      - poetry run isort -c --df -v .
+      - poetry run isort -c --df .
 
   run_tests:
     cmds:
-      - poetry run pytest ./tests/
+      - poetry run pytest --cov=real_estate_tools --cov-report term-missing --cov-fail-under=100 ./tests/
