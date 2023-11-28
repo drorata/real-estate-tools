@@ -6,6 +6,7 @@ from pydantic import BaseModel, ValidationInfo, field_validator
 
 class ZP_Data(BaseModel):
     zpid: int
+    parcelId: str
     city: str
     streetAddress: str
     state: str
