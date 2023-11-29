@@ -5,6 +5,7 @@ def test_allowed_lotAreaUnits():
     data = {
         "zpid": 11306973,
         "city": "Pittsburgh",
+        "parcelId": "123_parcelId",
         "streetAddress": "831 Londonderry Dr",
         "state": "PA",
         "homeStatus": "RECENTLY_SOLD",
@@ -31,6 +32,7 @@ def test_not_allowed_lotAreaUnits():
     data = {
         "zpid": 11306973,
         "city": "Pittsburgh",
+        "parcelId": "123_parcelId",
         "streetAddress": "831 Londonderry Dr",
         "state": "PA",
         "homeStatus": "RECENTLY_SOLD",
