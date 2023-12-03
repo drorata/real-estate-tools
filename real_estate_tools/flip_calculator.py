@@ -1,9 +1,9 @@
-import streamlit as st
-from loguru import logger
-from real_estate_tools import flip_calculator_components as fcc
 import pandas as pd
 import plotly.express as px
+import streamlit as st
+from loguru import logger
 
+from real_estate_tools import flip_calculator_components as fcc
 
 logger.info("Starting a flip calculation cycle")
 
@@ -95,7 +95,15 @@ total_rehab = st.number_input(label="Rehab costs ($)", min_value=0, step=500)
 
 """## Summary"""
 
-result = pd.DataFrame({"purchase_price": range(1000, arv, 1000)})
+min_purchase_price = st.number_input(
+    label="What's the minimal purchase price ($)?",
+    min_value=0,
+    max_value=int(arv * (1 - atractivity_factor)),
+    step=1000,
+    value=int(arv * 0.3),
+)
+
+result = pd.DataFrame({"purchase_price": range(min_purchase_price, arv, 1000)})
 result["purchase_costs"] = result["purchase_price"].apply(
     lambda x: purchase_factors.get_cost(x)
 )
