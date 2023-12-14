@@ -2,8 +2,7 @@ import pandas as pd
 import streamlit as st
 from loguru import logger
 
-from real_estate_tools.consts import ZP_Data
-from real_estate_tools.utils import clean_zpid, get_property_detail
+from real_estate_tools.utils import clean_zpid, fetch_properties
 
 logger.info("ARV estimator started")
 
@@ -20,16 +19,10 @@ continue_condition = st.button("Continue")
 if continue_condition:
     results = []
     with st.spinner("Wait for it..."):
-        for zpid in zpids:
-            tmp_res = get_property_detail(api_key, zpid).json()
-            if not tmp_res["is_success"]:
-                logger.warning("Something went wrong")
-                logger.warning(f"Message is: {tmp_res['message']}")
-            else:
-                results.append(ZP_Data(**tmp_res["data"]))
+        results = fetch_properties(api_key=api_key, zpids=zpids)
     st.success("Done!")
 
-    df = pd.DataFrame([x.dict() for x in results])
+    df = pd.DataFrame([x.model_dump() for x in results])
 
     st.write("Following are the results:")
     st.write(df)
