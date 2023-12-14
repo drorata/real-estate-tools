@@ -5,21 +5,31 @@ from loguru import logger
 
 from real_estate_tools import flip_calculator_components as fcc
 
+st.set_page_config(layout="wide")
+
 logger.info("Starting a flip calculation cycle")
 
 """
 # Flip Calculator
 
-## General factors
+Fill in all the details and checkout the graph at the bottom to see what is the best
+purchase price of your property
 """
-arv = st.number_input(
+general_col, selling_col, purchase_col, holding_costs_col, rehab_col = st.columns(5)
+
+
+###
+# General section
+###
+general_col.write("## General factors")
+arv = general_col.number_input(
     label="Provide estimated ARV ($)",
-    value=400000,
+    value=240000,
     step=1000,
     help="This will be used to derive the selling price.",
 )
 atractivity_factor = (
-    st.number_input(
+    general_col.number_input(
         label="Provide the attractivity factor (%)",
         value=2,
         min_value=0,
@@ -27,55 +37,70 @@ atractivity_factor = (
     )
     / 100
 )
-estimated_holding_period = st.number_input(
-    label="Number of months expected for flip", min_value=1
+listing_price = general_col.number_input(
+    label="What is the listing price?",
+    value=170000,
+    step=1000,
+)
+min_purchase_price = general_col.number_input(
+    label="What's the minimal purchase price ($)?",
+    min_value=0,
+    max_value=int(arv * (1 - atractivity_factor)),
+    step=1000,
+    value=int(listing_price * 0.7),
+)
+estimated_holding_period = general_col.number_input(
+    label="Number of months expected for flip", min_value=1, value=3
 )
 
-
-selling_col, purchase_col = st.columns(2)
-
-selling_col.write("## Selling factors")
-purchase_col.write("## Purchase factors")
-
+###
+# Selling section
+###
 selling_col.write(
+    "## Selling factors\n"
     ":blue[Provide estimations of the different factors to impact the **selling**"
     " costs]"
 )
+selling_factors = fcc.sell_or_purchase_factors(selling_col, mode="sell")
+
+###
+# Purchase section
+###
 purchase_col.write(
+    "## Purchase factors\n"
     ":blue[Provide estimations of the different factors to impact the **purchase**"
     " costs]"
 )
-
-selling_factors = fcc.sell_or_purchase_factors(selling_col, mode="sell")
 purchase_factors = fcc.sell_or_purchase_factors(purchase_col, mode="purchase")
 
 
-"""
-## Monthly holding costs
-
-Indicate expected monthly costs
-"""
-
+###
+# Holding costs section
+###
+holding_costs_col.write("## Monthly holding costs\nIndicate expected monthly costs")
 monthly_costs = pd.Series(
     {
-        "taxes_per_month": st.number_input(label="Tax ($)", min_value=0.0, step=10.0),
-        "insurance_per_month": st.number_input(
+        "taxes_per_month": holding_costs_col.number_input(
+            label="Tax ($)", min_value=0.0, step=10.0
+        ),
+        "insurance_per_month": holding_costs_col.number_input(
             label="Insurance ($)", min_value=0.0, step=10.0
         ),
-        "utilities_gas_per_month": st.number_input(
+        "utilities_gas_per_month": holding_costs_col.number_input(
             label="Gas ($)", min_value=0.0, step=10.0
         ),
-        "utilities_electricity_per_month": st.number_input(
+        "utilities_electricity_per_month": holding_costs_col.number_input(
             label="Electricity ($)", min_value=0.0, step=10.0
         ),
-        "utilities_water_sewer_per_month": st.number_input(
+        "utilities_water_sewer_per_month": holding_costs_col.number_input(
             label="Water and sewer ($)", min_value=0.0, step=10.0
         ),
-        "trash_per_month": st.number_input(label="Trash ($)", min_value=0.0, step=10.0),
+        "trash_per_month": holding_costs_col.number_input(
+            label="Trash ($)", min_value=0.0, step=10.0
+        ),
     },
     name="monthly_costs",
 )
-
 holding_costs = pd.DataFrame(
     {
         "total": monthly_costs * estimated_holding_period,
@@ -83,26 +108,16 @@ holding_costs = pd.DataFrame(
     }
 )
 
-
-"""
-## Rehab costs
-
-Provide estimation of the rehab total costs
-"""
-
-total_rehab = st.number_input(label="Rehab costs ($)", min_value=0, step=500)
+###
+# Rehab costs section
+###
+rehab_col.write("## Rehab costs\nProvide estimation of the rehab total costs")
+total_rehab = rehab_col.number_input(
+    label="Rehab costs ($)", min_value=0, step=500, value=int(arv * 0.2)
+)
 
 
 """## Summary"""
-
-min_purchase_price = st.number_input(
-    label="What's the minimal purchase price ($)?",
-    min_value=0,
-    max_value=int(arv * (1 - atractivity_factor)),
-    step=1000,
-    value=int(arv * 0.3),
-)
-
 result = pd.DataFrame({"purchase_price": range(min_purchase_price, arv, 1000)})
 result["purchase_costs"] = result["purchase_price"].apply(
     lambda x: purchase_factors.get_cost(x)
@@ -113,11 +128,28 @@ result["rehab_costs"] = total_rehab
 result["total_expenses"] = result.sum(axis=1)
 result["total_income"] = arv * (1 - atractivity_factor)
 result["ROI"] = 100 * (result["total_income"] / result["total_expenses"] - 1)
-# result = result.set_index("purchase_price")
 st.dataframe(result, height=150)
 
 
-fig = px.line(result, x="purchase_price", y="ROI")
-
-
+idx_of_20_pct_ROI = (result["ROI"] - 20).abs().idxmin()
+fig = px.line(
+    result, x="purchase_price", y="ROI", labels={"purchase_price": "Purchase price"}
+)
+fig.add_vline(
+    x=result.iloc[idx_of_20_pct_ROI]["purchase_price"],
+    annotation_text="20% ROI",
+    line_color="green",
+    line_dash="dot",
+)
+fig.add_vline(
+    x=listing_price,
+    annotation_text="Listing price",
+    line_color="red",
+    line_dash="dot",
+)
+fig.update_layout(
+    annotations=[
+        {**a, **{"textangle": 90}} for a in fig.to_dict()["layout"]["annotations"]
+    ]
+)
 st.plotly_chart(fig)

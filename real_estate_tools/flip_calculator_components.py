@@ -1,28 +1,6 @@
-# import streamlit as st
-from typing import Union
-from pydantic import BaseModel
 import streamlit as st_import
 
-
-class SellPurchaseFactors(BaseModel):
-    broker_commission: Union[int, float]
-    fixed_broker_fee: Union[int, float]
-    closing_costs: Union[int, float]
-    transfer_tax: Union[int, float]
-    fixed_notary: Union[int, float]
-    deed_recording_fee: Union[int, float]
-    legal_fee: Union[int, float]
-
-    def get_cost(self, price: float) -> float:
-        return (
-            price * self.broker_commission
-            + self.fixed_broker_fee
-            + price * self.closing_costs
-            + price * self.transfer_tax
-            + self.fixed_notary
-            + self.deed_recording_fee
-            + self.legal_fee
-        )
+from real_estate_tools.consts import SellPurchaseFactors
 
 
 def sell_or_purchase_factors(st: st_import, mode: str) -> SellPurchaseFactors:
