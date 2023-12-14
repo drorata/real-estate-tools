@@ -1,3 +1,5 @@
+import json
+
 from real_estate_tools.consts import ZP_Data
 
 
@@ -55,3 +57,10 @@ def test_not_allowed_lotAreaUnits():
     assert data_obj
     assert data_obj.lotAreaValue is None
     assert data_obj.lotAreaUnits == "Not allowed value"
+
+
+def test_basic_file_load(complete_result):
+    with open(complete_result, "r") as f:
+        d = json.load(f)["data"]
+    assert isinstance(ZP_Data(**d), ZP_Data)
+    assert True
