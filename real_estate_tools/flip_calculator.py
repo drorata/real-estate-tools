@@ -28,7 +28,7 @@ arv = general_col.number_input(
     step=1000,
     help="This will be used to derive the selling price.",
 )
-atractivity_factor = (
+attractivity_factor = (
     general_col.number_input(
         label="Provide the attractivity factor (%)",
         value=2,
@@ -45,7 +45,7 @@ listing_price = general_col.number_input(
 min_purchase_price = general_col.number_input(
     label="What's the minimal purchase price ($)?",
     min_value=0,
-    max_value=int(arv * (1 - atractivity_factor)),
+    max_value=int(arv * (1 - attractivity_factor)),
     step=1000,
     value=int(listing_price * 0.7),
 )
@@ -122,11 +122,11 @@ result = pd.DataFrame({"purchase_price": range(min_purchase_price, arv, 1000)})
 result["purchase_costs"] = result["purchase_price"].apply(
     lambda x: purchase_factors.get_cost(x)
 )
-result["selling_costs"] = selling_factors.get_cost(arv)
+result["selling_costs"] = selling_factors.get_cost(arv * (1 - attractivity_factor))
 result["holding_costs"] = holding_costs["total"].sum()
 result["rehab_costs"] = total_rehab
 result["total_expenses"] = result.sum(axis=1)
-result["total_income"] = arv * (1 - atractivity_factor)
+result["total_income"] = arv * (1 - attractivity_factor)
 result["ROI"] = 100 * (result["total_income"] / result["total_expenses"] - 1)
 st.dataframe(result, height=150)
 
