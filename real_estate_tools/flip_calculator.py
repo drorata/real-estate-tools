@@ -101,12 +101,10 @@ monthly_costs = pd.Series(
     },
     name="monthly_costs",
 )
-holding_costs = pd.DataFrame(
-    {
-        "total": monthly_costs * estimated_holding_period,
-        "monthly": monthly_costs,
-    }
-)
+holding_costs = pd.DataFrame({
+    "total": monthly_costs * estimated_holding_period,
+    "monthly": monthly_costs,
+})
 
 ###
 # Rehab costs section
@@ -175,9 +173,9 @@ output_general = pd.DataFrame(
 )
 st.dataframe(output_general)
 
-output_purchase_sell = pd.DataFrame(
-    [purchase_factors.model_dump(), selling_factors.model_dump()]
-).rename({0: "Purchase", 1: "Selling"}, axis=0)
+output_purchase_sell = pd.DataFrame([
+    purchase_factors.model_dump(), selling_factors.model_dump()
+]).rename({0: "Purchase", 1: "Selling"}, axis=0)
 st.dataframe(output_purchase_sell)
 
 st.dataframe(holding_costs)

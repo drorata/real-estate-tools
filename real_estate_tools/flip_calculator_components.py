@@ -66,14 +66,12 @@ def sell_or_purchase_factors(st: st_import, mode: str) -> SellPurchaseFactors:
         key=f"{mode}_legal_fees",
     )
 
-    return SellPurchaseFactors(
-        **{
-            "broker_commission": broker_commission,
-            "fixed_broker_fee": fixed_broker_fee,
-            "closing_costs": closing_costs,
-            "transfer_tax": transfer_tax,
-            "fixed_notary": fixed_notary,
-            "deed_recording_fee": deed_recording_fee,
-            "legal_fee": legal_fee,
-        }
-    )
+    return SellPurchaseFactors(**{
+        "broker_commission": broker_commission,
+        "fixed_broker_fee": fixed_broker_fee,
+        "closing_costs": closing_costs,
+        "transfer_tax": transfer_tax,
+        "fixed_notary": fixed_notary,
+        "deed_recording_fee": deed_recording_fee,
+        "legal_fee": legal_fee,
+    })
