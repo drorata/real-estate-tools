@@ -154,15 +154,13 @@ st.plotly_chart(fig)
 
 
 output_general = pd.DataFrame(
-    [
-        [
-            arv,
-            attractivity_factor,
-            listing_price,
-            min_purchase_price,
-            estimated_holding_period,
-        ]
-    ],
+    [[
+        arv,
+        attractivity_factor,
+        listing_price,
+        min_purchase_price,
+        estimated_holding_period,
+    ]],
     columns=[
         "ARV",
         "Attractivity factor",
@@ -173,9 +171,9 @@ output_general = pd.DataFrame(
 )
 st.dataframe(output_general)
 
-output_purchase_sell = pd.DataFrame([
-    purchase_factors.model_dump(), selling_factors.model_dump()
-]).rename({0: "Purchase", 1: "Selling"}, axis=0)
+output_purchase_sell = pd.DataFrame(
+    [purchase_factors.model_dump(), selling_factors.model_dump()]
+).rename({0: "Purchase", 1: "Selling"}, axis=0)
 st.dataframe(output_purchase_sell)
 
 st.dataframe(holding_costs)
