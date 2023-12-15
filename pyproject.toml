@@ -34,4 +34,6 @@ build-backend = "poetry.core.masonry.api"
 [tool.coverage.run]
 omit = [
     "real_estate_tools/arv_estimate.py",
+    "real_estate_tools/flip_calculator.py",
+    "real_estate_tools/flip_calculator_components.py",
     ]
