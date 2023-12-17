@@ -7,8 +7,8 @@ from pydantic import BaseModel, Field, ValidationInfo, field_validator
 class SellPurchaseFactors(BaseModel):
     broker_commission: Union[int, float] = Field(gt=0, lt=1)
     fixed_broker_fee: Union[int, float]
-    closing_costs: Union[int, float] = Field(gt=0, lt=1)
-    transfer_tax: Union[int, float] = Field(gt=0, lt=1)
+    closing_costs: Union[int, float] = Field(ge=0, lt=1)
+    transfer_tax: Union[int, float] = Field(ge=0, lt=1)
     fixed_notary: Union[int, float]
     deed_recording_fee: Union[int, float]
     legal_fee: Union[int, float]

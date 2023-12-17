@@ -44,7 +44,7 @@ def test_broker_commission(broker_commission_vals):
         )
 
 
-@pytest.mark.parametrize("closing_costs_vals", [20, 1, 0.0, -1])
+@pytest.mark.parametrize("closing_costs_vals", [20, 1, -0.0001, -1])
 def test_closing_costs(closing_costs_vals):
     with pytest.raises(ValidationError):
         SellPurchaseFactors(
@@ -58,7 +58,7 @@ def test_closing_costs(closing_costs_vals):
         )
 
 
-@pytest.mark.parametrize("transfer_tax_vals", [20, 1, 0.0, -1])
+@pytest.mark.parametrize("transfer_tax_vals", [20, 1, -0.0001, -1])
 def test_transfer_tax(transfer_tax_vals):
     with pytest.raises(ValidationError):
         SellPurchaseFactors(
