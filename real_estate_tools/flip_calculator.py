@@ -154,6 +154,11 @@ fig.update_layout(
     ]
 )
 st.plotly_chart(fig)
+st.write(
+    "If you purchase the property for"
+    f" {result.iloc[idx_of_20_pct_ROI]['purchase_price']:,.0f}$ you will make"
+    f" {result.iloc[idx_of_20_pct_ROI]['ROI']:.1f}% ROI"
+)
 
 
 workbook = Workbook()
