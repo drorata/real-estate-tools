@@ -1,9 +1,14 @@
+from io import BytesIO
+from tempfile import NamedTemporaryFile
+
 import pandas as pd
 import plotly.express as px
 import streamlit as st
 from loguru import logger
+from openpyxl import Workbook
 
 from real_estate_tools import flip_calculator_components as fcc
+from real_estate_tools.utils import summarize_flip_calc
 
 st.set_page_config(layout="wide")
 
@@ -153,6 +158,14 @@ fig.update_layout(
 st.plotly_chart(fig)
 
 
+workbook = Workbook()
+logger.debug(
+    f"New workbook has the following sheets: {workbook.sheetnames}. These sheets will"
+    " be deleted"
+)
+for sheet in workbook.sheetnames:
+    workbook.remove(workbook[sheet])
+
 output_general = pd.DataFrame(
     [[
         arv,
@@ -169,11 +182,25 @@ output_general = pd.DataFrame(
         "Estimated holding period",
     ],
 )
-st.dataframe(output_general)
-
 output_purchase_sell = pd.DataFrame(
     [purchase_factors.model_dump(), selling_factors.model_dump()]
 ).rename({0: "Purchase", 1: "Selling"}, axis=0)
-st.dataframe(output_purchase_sell)
+workbook = summarize_flip_calc(
+    workbook=workbook,
+    general=output_general,
+    purchase_sell_cost_factors=output_purchase_sell,
+    holding_costs=holding_costs,
+    rehab_costs=total_rehab,
+)
 
-st.dataframe(holding_costs)
+with NamedTemporaryFile() as tmp:
+    logger.debug(f"Obtain the following temp file {tmp.name}")
+    workbook.save(tmp.name)
+    data = BytesIO(tmp.read())
+
+st.download_button(
+    label="Download summary (xlsx)",
+    data=data,
+    mime="application/octet-stream",
+    file_name="Flip calculator summary.xlsx",
+)
