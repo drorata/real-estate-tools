@@ -131,8 +131,6 @@ result["rehab_costs"] = total_rehab
 result["total_expenses"] = result.sum(axis=1)
 result["total_income"] = arv * (1 - attractivity_factor)
 result["ROI"] = 100 * (result["total_income"] / result["total_expenses"] - 1)
-st.dataframe(result, height=150)
-
 
 idx_of_20_pct_ROI = (result["ROI"] - 20).abs().idxmin()
 fig = px.line(
@@ -197,6 +195,10 @@ with NamedTemporaryFile() as tmp:
     logger.debug(f"Obtain the following temp file {tmp.name}")
     workbook.save(tmp.name)
     data = BytesIO(tmp.read())
+
+show_result_df = st.toggle(label="Show resulting table", value=False)
+if show_result_df:
+    st.dataframe(result, height=150)
 
 st.download_button(
     label="Download summary (xlsx)",
