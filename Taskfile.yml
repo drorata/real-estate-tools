@@ -1,6 +1,12 @@
 version: "3"
 
 tasks:
+  default:
+    deps:
+      - validate_lint
+      - run_tests
+
+
   validate_lint:
     cmds:
       - poetry run black --check --preview --diff .
