@@ -116,7 +116,7 @@ holding_costs = pd.DataFrame({
 ###
 rehab_col.write("## Rehab costs\nProvide estimation of the rehab total costs")
 total_rehab = rehab_col.number_input(
-    label="Rehab costs ($)", min_value=0, step=500, value=int(arv * 0.2)
+    label="Rehab costs ($)", min_value=0, step=500, value=int(arv * 0.05)
 )
 
 
