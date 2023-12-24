@@ -1,7 +1,28 @@
-from typing import Any
+from typing import Any, Union
 
 from loguru import logger
-from pydantic import BaseModel, ValidationInfo, field_validator
+from pydantic import BaseModel, Field, ValidationInfo, field_validator
+
+
+class SellPurchaseFactors(BaseModel):
+    broker_commission: Union[int, float] = Field(gt=0, lt=1)
+    fixed_broker_fee: Union[int, float]
+    closing_costs: Union[int, float] = Field(ge=0, lt=1)
+    transfer_tax: Union[int, float] = Field(ge=0, lt=1)
+    fixed_notary: Union[int, float]
+    deed_recording_fee: Union[int, float]
+    legal_fee: Union[int, float]
+
+    def get_cost(self, price: float) -> float:
+        return (
+            price * self.broker_commission
+            + self.fixed_broker_fee
+            + price * self.closing_costs
+            + price * self.transfer_tax
+            + self.fixed_notary
+            + self.deed_recording_fee
+            + self.legal_fee
+        )
 
 
 class ZP_Data(BaseModel):

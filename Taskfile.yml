@@ -1,9 +1,15 @@
 version: "3"
 
 tasks:
+  default:
+    deps:
+      - validate_lint
+      - run_tests
+
+
   validate_lint:
     cmds:
-      - poetry run black --check --preview .
+      - poetry run black --check --preview --diff .
       - poetry run flake8 .
       - poetry run isort -c --df .
 

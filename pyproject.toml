@@ -14,6 +14,8 @@ streamlit = "^1.28.2"
 requests = "^2.31.0"
 loguru = "^0.7.2"
 pydantic = "^2.5.1"
+plotly = "^5.18.0"
+openpyxl = "^3.1.2"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.26.0"
@@ -33,4 +35,6 @@ build-backend = "poetry.core.masonry.api"
 [tool.coverage.run]
 omit = [
     "real_estate_tools/arv_estimate.py",
+    "real_estate_tools/flip_calculator.py",
+    "real_estate_tools/flip_calculator_components.py",
     ]
