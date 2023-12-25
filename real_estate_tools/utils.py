@@ -1,12 +1,75 @@
-from typing import List
+import json
+from typing import Iterator, List, Union
 
 import pandas as pd
 import requests
 from loguru import logger
 from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
+from pydantic import ValidationError
+from streamlit.delta_generator import DeltaGenerator
 
-from real_estate_tools.consts import ZP_Data
+from real_estate_tools.consts import PropertyDetails, ZP_Data
+
+
+def properties_to_df(
+    properties: Iterator[Union[None, PropertyDetails]]
+) -> pd.DataFrame:
+    """Generate a flat dataframe from an iterator of PropertyDetails's
+
+    Parameters
+    ----------
+    properties : List[PropertyDetails]
+        The properties to export
+
+    Returns
+    -------
+    pd.DataFrame
+        _description_
+    """
+    result = pd.DataFrame(
+        map(lambda x: x.model_dump() if x is not None else None, properties)
+    )
+    return result
+
+
+def area_to_sqft(value: Union[int, float], unit: str) -> Union[int, float]:
+    unit = unit.lower()
+    supported_area_units = [
+        "square feet",
+    ]
+    if unit in supported_area_units:
+        if unit == "square feet":
+            return value
+    logger.warning(
+        f"Supported area units are: {supported_area_units}; {unit} is not one of them"
+    )
+    return 0
+
+
+def raw_zillow_to_property_details(raw_data: dict) -> PropertyDetails:
+    return PropertyDetails(
+        address=f'{raw_data["streetAddress"]}, {raw_data["city"]}',
+        full_address=(
+            f"{raw_data['streetAddress']}, {raw_data['city']},"
+            f" {raw_data['state']} {raw_data['zipcode']}"
+        ),
+        lat=raw_data["latitude"],
+        lon=raw_data["longitude"],
+        link=f"https://www.zillow.com{raw_data['hdpUrl']}",
+        # home_status=raw_data["homeStatus"]
+        thumbnail_link=raw_data["photos"][0]["mixedSources"]["webp"][0]["url"],
+        parcel_id=raw_data["resoFacts"]["parcelNumber"],
+        county=raw_data["county"],
+        rooms=raw_data["bedrooms"],
+        baths=raw_data["bathrooms"],
+        built_year=raw_data["yearBuilt"],
+        listed_price=raw_data["price"],
+        listed_date=raw_data["priceHistory"][0]["date"],
+        garages=raw_data["resoFacts"]["parkingCapacity"],
+        living_area=raw_data["livingArea"] if raw_data["livingArea"] else 0,
+        lot_area=area_to_sqft(unit=raw_data["lotAreaUnits"], value=raw_data["lotSize"]),
+    )
 
 
 def clean_zpid(zpid: str) -> str:
@@ -70,3 +133,11 @@ def summarize_flip_calc(
     flip_calc.append(["Total rehab", rehab_costs])
 
     return workbook
+
+
+def st_warn_validation_error(
+    st: DeltaGenerator, e: ValidationError
+) -> None:  # pragma: no cover
+    e = json.loads(e.json())
+    for issue in e:
+        st.warning(f"Field {issue['loc']} has an issue of type {issue['type']}")
