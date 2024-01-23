@@ -7,6 +7,22 @@ on:
 
 env:
   RET_COV_THRESHOLD: 100
+  RET_GOOGLE_CREDENTIALS_TYPE: service_account
+  RET_GOOGLE_CREDENTIALS_PROJECT_ID: real-estate-tools-drorata
+  RET_GOOGLE_CREDENTIALS_PRIVATE_KEY_ID: ${{ secrets.RET_GOOGLE_CREDENTIALS_PRIVATE_KEY_ID }}
+  RET_GOOGLE_CREDENTIALS_PRIVATE_KEY: ${{ secrets.RET_GOOGLE_CREDENTIALS_PRIVATE_KEY }}
+  RET_GOOGLE_CREDENTIALS_CLIENT_EMAIL: bot-gsheet@real-estate-tools-drorata.iam.gserviceaccount.com
+  RET_GOOGLE_CREDENTIALS_CLIENT_ID: ${{ secrets.RET_GOOGLE_CREDENTIALS_CLIENT_ID }}
+  RET_GOOGLE_CREDENTIALS_AUTH_URI: https://accounts.google.com/o/oauth2/auth
+  RET_GOOGLE_CREDENTIALS_TOKEN_URI: https://oauth2.googleapis.com/token
+  RET_GOOGLE_CREDENTIALS_AUTH_PROVIDER_X509_CERT_URL: https://www.googleapis.com/oauth2/v1/certs
+  RET_GOOGLE_CREDENTIALS_CLIENT_X509_CERT_URL: https://www.googleapis.com/robot/v1/metadata/x509/bot-gsheet%40real-estate-tools-drorata.iam.gserviceaccount.com
+  RET_GOOGLE_CREDENTIALS_UNIVERSE_DOMAIN: googleapis.com
+  RET_SCRAPEAK_API_KEY: ${{ secrets.RET_SCRAPEAK_API_KEY }}
+  RET_SCRAPEAK_ZILLOW_URL: https://app.scrapeak.com/v1/scrapers/zillow/property
+  RET_LOCATIONIQ_API_KEY: ${{ secrets.RET_LOCATIONIQ_API_KEY }}
+  RET_LOCATIONIQ_FORWARD_SEARCH_URL: https://us1.locationiq.com/v1/search
+
 
 jobs:
   lint:
