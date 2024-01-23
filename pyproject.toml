@@ -16,6 +16,9 @@ loguru = "^0.7.2"
 pydantic = "^2.5.1"
 plotly = "^5.18.0"
 openpyxl = "^3.1.2"
+geopy = "^2.4.1"
+pydantic-settings = "^2.1.0"
+pygsheets = "^2.0.6"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.26.0"
@@ -37,4 +40,8 @@ omit = [
     "real_estate_tools/arv_estimate.py",
     "real_estate_tools/flip_calculator.py",
     "real_estate_tools/flip_calculator_components.py",
+    "real_estate_tools/comps_collect.py",
     ]
+
+[tool.isort]
+profile = "black"

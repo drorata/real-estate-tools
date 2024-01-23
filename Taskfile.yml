@@ -12,7 +12,14 @@ tasks:
       - poetry run black --check --preview --diff .
       - poetry run flake8 .
       - poetry run isort -c --df .
+    sources:
+      - real_estate_tools/**/*.py
+      - tests/**/*.py
 
   run_tests:
     cmds:
-      - poetry run pytest --cov=real_estate_tools --cov-report term-missing --cov-fail-under=100 ./tests/
+      - poetry run pytest --cov=real_estate_tools --cov-report term-missing --cov-fail-under=$RET_COV_THRESHOLD ./tests/
+    sources:
+      - real_estate_tools/**/*.py
+    env:
+      RET_COV_THRESHOLD: 100

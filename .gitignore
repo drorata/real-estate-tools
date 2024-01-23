@@ -5,3 +5,12 @@
 __pycache__/
 
 scratch.ipynb
+gsheets_testing.ipynb
+
+tests/test_files/raw_results_formated.json
+
+
+.credentials/
+
+cov.json
+.task/
