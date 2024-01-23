@@ -51,6 +51,6 @@ jobs:
         run: |
           poetry install
 
-      - name: Run lint test
+      - name: Run test
         run: |
           task run_tests
