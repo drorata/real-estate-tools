@@ -105,7 +105,7 @@ def comps_tab(container: DeltaGenerator) -> Union[None, List[PropertyDetails]]:
     demo_data_fetch = container.toggle("Demo mode", value=False)
     continue_condition = container.button("Fetch data")
     if continue_condition:
-        with open("./tests/test_files/raw_results_formated.json", "r") as f:
+        with open("./resources/raw_results_formated.json", "r") as f:
             raw_results = json.load(f)
         if not demo_data_fetch:
             raw_results = []
